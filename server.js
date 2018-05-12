@@ -73,6 +73,8 @@ if (require.main === module) {
       console.error(err);
     });
 
+  // Listen for requests on the port
+  // Without this, the app won't work
   app.listen(PORT, function () {
     console.info(`Server listening on ${this.address().port}`);
   }).on('error', err => {

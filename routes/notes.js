@@ -155,8 +155,18 @@ router.put('/:id', (req, res, next) => {
     return next(err);
   }
 
-  if (mongoose.Types.ObjectId.isValid(folderId)) {
+  if (folderId && mongoose.Types.ObjectId.isValid(folderId)) {
     updateNote.folderId = folderId;
+  } else if (folderId && !mongoose.Types.ObjectId.isValid(folderId)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 404;
+    return next(err);
+  }
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    const err = new Error('The `id` is not valid');
+    err.status = 400;
+    return next(err);
   }
 
   Promise.all([
@@ -164,11 +174,14 @@ router.put('/:id', (req, res, next) => {
     validateTagIds(tags, userId)
   ])
     .then(() => {
+      console.log('line 181');
       return Note.findByIdAndUpdate(id, updateNote, { new: true })
         .populate('tags');
     })
     .then(result => {
+      console.log(result);
       if (result) {
+        res.status(200);
         res.json(result);
       } else {
         next();
