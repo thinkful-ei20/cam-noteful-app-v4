@@ -148,6 +148,8 @@ router.put('/:id', (req, res, next) => {
   const userId = req.user.id;
   const updateNote = { title, content, userId, folderId, tags };
 
+
+
   /***** Never trust users - validate input *****/
   if (!title) {
     const err = new Error('Missing `title` in request body');
